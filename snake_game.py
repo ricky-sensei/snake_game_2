@@ -4,8 +4,13 @@ import pyxel
 
 class App:
     def __init__(self): 
-        self.position_x = 0
-        self.position_y = 0
+        # position_x: 画面上のマス目の数
+        self.head_position_x = 3
+        self.head_position_y = 2
+
+        self.body_position_x = 2
+        self.body_position_y = 2
+
 
         self.frame_count = 0
 
@@ -26,39 +31,55 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self): # 情報の更新
-        if pyxel.btnp(pyxel.KEY_DOWN):
-            self.angle = 90
-        if pyxel.btnp(pyxel.KEY_LEFT):
-            self.angle = 180
-        if pyxel.btnp(pyxel.KEY_UP):
-            self.angle = 270
-        if pyxel.btnp(pyxel.KEY_RIGHT):
-            self.angle = 0
+        if self.game_over == False:
+            if pyxel.btnp(pyxel.KEY_DOWN):
+                self.angle = 90
+            if pyxel.btnp(pyxel.KEY_LEFT):
+                self.angle = 180
+            if pyxel.btnp(pyxel.KEY_UP):
+                self.angle = 270
+            if pyxel.btnp(pyxel.KEY_RIGHT):
+                self.angle = 0
 
-        self.frame_count += 1
-        if self.frame_count % 30 == 0:
-            if self.angle == 0:
-                self.position_x += self.speed
-            if self.angle == 90:
-                self.position_y += self.speed
-            if self.angle == 180:
-                self.position_x -= self.speed
-            if self.angle == 270:
-                self.position_y -= self.speed
-        
+            self.frame_count += 1
+            if self.frame_count % 30 == 0:
+                if self.angle == 0:
+                    self.head_position_x += 1
+                if self.angle == 90:
+                    self.head_position_y += 1
+                if self.angle == 180:
+                    self.head_position_x -= 1
+                if self.angle == 270:
+                    self.head_position_y -= 1
+
         
         # ゲームオーバー判定
-        if self.position_x >= self.screen_size or self.position_x < 0 or self.position_y >= self.screen_size or self.position_y < 0:
+        if self.head_position_x > 9 or self.head_position_x < 0 or self.head_position_y > 9 or self.head_position_y < 0:
             self.game_over = True
+
+        print(self.head_position_x)
+        print(self.head_position_y)
+        
         
 
     def draw(self): # 描画
         pyxel.cls(0)
         pyxel.blt(
-            self.position_x,
-            self.position_y,
+            self.head_position_x * self.speed,
+            self.head_position_y * self.speed,
             0,
             0,
+            0,
+            16,
+            16,
+            0,
+            rotate=self.angle
+        )
+        pyxel.blt(
+            self.body_position_x * self.speed,
+            self.body_position_y * self.speed,
+            0,
+            16,
             0,
             16,
             16,
